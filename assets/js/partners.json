@@ -1,0 +1,64 @@
+{
+  "partners": [
+    {
+      "logoUrl": "assets/img/可可喵.jpg",
+      "logoText": "P2",
+      "name": "可可喵",
+      "desc": "https://youtube.com/@yuicoco"
+    },
+    {
+      "logoUrl": "assets/img/無名暖風.jpg",
+      "logoText": "P2",
+      "name": "無名暖風",
+      "desc": "https://youtube.com/channel/UCC-9zzh7PxRXcxTGwYIxneA?si=lsZVo8-mFpK720-F"
+    },
+    {
+      "logoUrl": "assets/img/小腿Leg.jpg",
+      "logoText": "P2",
+      "name": "小腿Leg",
+      "desc": "https://www.youtube.com/@yt-legyt"
+    },
+    {
+      "logoUrl": "assets/img/佑佑NakaYuu.jpg",
+      "logoText": "P2",
+      "name": "佑佑NakaYuu",
+      "desc": "https://youtube.com/channel/UCZTMjLx_ylJ07bjFYYJKjOQ?si=XHA9z2bgkwrYHXKH"
+    },
+    {
+      "logoUrl": "assets/img/林世.jpg",
+      "logoText": "P2",
+      "name": "林世",
+      "desc": "https://www.youtube.com/channel/UCA2gOm8Jn3v8CxYVdFWbrhA"
+    },
+    {
+      "logoUrl": "assets/img/石洛廷俱樂部.jpg",
+      "logoText": "P2",
+      "name": "石洛廷俱樂部",
+      "desc": "https://youtube.com/@asd123zxc?si=xs15vs_RAWK6mGK9"
+    },
+    {
+      "logoUrl": "assets/img/Cheese.jpg",
+      "logoText": "P2",
+      "name": "Cheese",
+      "desc": "https://www.youtube.com/@Cheese-0718"
+    },
+    {
+      "logoUrl": "assets/img/奶格麗特.jpg",
+      "logoText": "P2",
+      "name": "奶格麗特",
+      "desc": "https://youtube.com/channel/UCyLmtYw70ba9ubcyB8yjgOA?si=iC27DeHRKjtyneRn"
+    },
+    {
+      "logoUrl": "assets/img/阿烜AShan.jpg",
+      "logoText": "P2",
+      "name": "阿烜AShan",
+      "desc": "https://www.youtube.com/channel/UC4lBifocueglzy-dqK49sEw"
+    },
+    {
+      "logoUrl": "assets/img/1NotCyawa.jpg",
+      "logoText": "P2",
+      "name": "1NotCyawa",
+      "desc": "https://www.youtube.com/@cy_awa"
+    }
+  ]
+}
