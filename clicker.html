@@ -1,0 +1,117 @@
+ <!DOCTYPE html>
+        <html lang="zh-TW">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+            <title>鑽石礦坑 - 挖礦中</title>
+            <style>
+                body { background:#1a1a2e; color:white; font-family: system-ui, -apple-system, sans-serif; margin:0; padding:20px; overflow-x: hidden; }
+                .container { max-width: 800px; margin: auto; text-align: center; position: relative; }
+                
+                /* 下彈通知小卡 */
+                #toast {
+                    position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+                    background: #e94560; color: white; padding: 15px 30px; 
+                    border-radius: 0 0 20px 20px; font-weight: bold; z-index: 10000;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+                    transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                }
+                #toast.show { top: 0; animation: shake 0.4s ease-in-out; }
+                @keyframes shake {
+                    0%, 100% { transform: translateX(-50%); }
+                    25% { transform: translateX(-53%); }
+                    75% { transform: translateX(-47%); }
+                }
+
+                .logout-link { 
+                    position: absolute; top: 0; right: 0; 
+                    color: #e94560; text-decoration: none; font-size: 13px; 
+                    padding: 6px 12px; border: 1px solid #e94560; border-radius: 8px;
+                }
+
+                .global-stats { display: flex; justify-content: center; gap: 10px; margin: 50px 0 20px; }
+                .stat-box { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); flex: 1; }
+                
+                .personal-grid { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
+                .p-box { background: #16213e; padding: 12px; border-radius: 15px; flex: 1; border-bottom: 3px solid #00d2ff; min-width: 80px; }
+                
+                .mine-btn { width: 100%; max-width: 300px; padding: 20px; font-size: 24px; background: #e94560; color: white; border: none; border-radius: 20px; cursor: pointer; box-shadow: 0 6px #a32e43; font-weight: bold; margin: 25px 0; -webkit-tap-highlight-color: transparent; transition: 0.1s; }
+                .mine-btn:active { transform: translateY(4px); box-shadow: 0 2px #a32e43; }
+                
+                .up-btn { padding: 15px 20px; background: #0f3460; color: #4ecca3; border: 1px solid #4ecca3; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; max-width: 300px; }
+                
+                .val { font-size: clamp(16px, 4vw, 22px); font-family: monospace; font-weight: bold; display: block; margin-top: 5px; }
+                .label { font-size: 10px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+
+                @media (max-width: 600px) {
+                    .personal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+                    .p-box:last-child { grid-column: span 2; }
+                    h1 { font-size: 28px; margin-top: 40px; }
+                }
+            </style>
+        </head>
+        <body>
+            <div id="toast">⚠️ <span id="toast-msg">餘額不足！</span></div>
+
+            <div class="container">
+                <a href="/logout" class="logout-link">🚪 登出</a>
+                <h1>💎 鑽石礦坑</h1>
+                
+                <div class="global-stats">
+                    <div class="stat-box" style="border-color: #00d2ff;">
+                        <div class="label" style="color: #00d2ff;">全服挖掘</div>
+                        <span id="global_mined" class="val">0</span>
+                    </div>
+                    <div class="stat-box" style="border-color: #e94560;">
+                        <div class="label" style="color: #e94560;">全服點擊</div>
+                        <span id="global_clicks" class="val">0</span>
+                    </div>
+                </div>
+
+                <div class="personal-grid">
+                    <div class="p-box"><div class="label">餘額</div><span id="balance" class="val" style="color: #00d2ff;">0</span></div>
+                    <div class="p-box" style="border-color: #f9ed69;"><div class="label">個人挖掘</div><span id="total_mined" class="val" style="color: #f9ed69;">0</span></div>
+                    <div class="p-box" style="border-color: #e94560;"><div class="label">總點擊</div><span id="total_clicks" class="val" style="color: #e94560;">0</span></div>
+                </div>
+
+                <button class="mine-btn" onclick="mine()">⛏️ 奮力挖掘</button><br>
+                <button class="up-btn" onclick="upgrade()">⬆️ 升級 (Lv.<span id="level">1</span>)<br><small>花費 <span id="cost">...</span> 💎</small></button>
+                <p style="color:#f9ed69; font-size:12px; margin-top:30px;">當前礦工: {{ username }}</p>
+            </div>
+
+            <script>
+            const toast = document.getElementById('toast');
+            function showToast(msg) {
+                document.getElementById('toast-msg').innerText = msg;
+                toast.classList.add('show');
+                setTimeout(() => { toast.classList.remove('show'); }, 2500);
+            }
+
+            function updateUI(data) {
+                if (data.new_balance !== undefined) document.getElementById('balance').innerText = data.new_balance.toLocaleString();
+                if (data.total_mined !== undefined) document.getElementById('total_mined').innerText = data.total_mined.toLocaleString();
+                if (data.total_clicks !== undefined) document.getElementById('total_clicks').innerText = data.total_clicks.toLocaleString();
+                if (data.global_mined !== undefined) document.getElementById('global_mined').innerText = data.global_mined.toLocaleString();
+                if (data.global_clicks !== undefined) document.getElementById('global_clicks').innerText = data.global_clicks.toLocaleString();
+                let lvl = data.level || data.new_level;
+                if (lvl) {
+                    document.getElementById('level').innerText = lvl;
+                    document.getElementById('cost').innerText = Math.floor(100 * Math.pow(1.4, lvl - 1)).toLocaleString();
+                }
+            }
+
+            async function mine() {
+                const res = await fetch('/api/action', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({action: 'mine'}) });
+                const data = await res.json(); if (data.success) updateUI(data);
+            }
+
+            async function upgrade() {
+                const res = await fetch('/api/action', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({action: 'upgrade'}) });
+                const data = await res.json();
+                if (data.success) updateUI(data); else showToast(data.message);
+            }
+
+            fetch('/api/action', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({action: 'init'}) }).then(r => r.json()).then(d => updateUI(d));
+            </script>
+        </body>
+        </html>
